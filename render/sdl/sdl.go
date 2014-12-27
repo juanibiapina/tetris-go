@@ -59,7 +59,7 @@ func (s *Sdl) Render(g *game.Game) {
 		copy(board.Tiles[l], g.Board.Tiles[l])
 	}
 
-	if g.HasCurrentBlock() {
+	if g.HasBlock() {
 		for r, row := range g.CurrentBlock.Data {
 			for c, v := range row {
 				x := g.CurrentBlockX + c

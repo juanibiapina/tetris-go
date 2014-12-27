@@ -32,7 +32,7 @@ func New() *Game {
 	}
 }
 
-func (g *Game) HasCurrentBlock() bool {
+func (g *Game) HasBlock() bool {
 	return g.CurrentBlock != nil
 }
 
@@ -60,15 +60,15 @@ func (g *Game) CanMove(offsetx, offsety int) bool {
 }
 
 func (g *Game) CanMoveCurrentBlockDown() bool {
-	return g.CanMove(0, 1)
+	return g.HasBlock() && g.CanMove(0, 1)
 }
 
 func (g *Game) CanMoveCurrentBlockLeft() bool {
-	return g.CanMove(-1, 0)
+	return g.HasBlock() && g.CanMove(-1, 0)
 }
 
 func (g *Game) CanMoveCurrentBlockRight() bool {
-	return g.CanMove(1, 0)
+	return g.HasBlock() && g.CanMove(1, 0)
 }
 
 func (g *Game) TryMoveCurrentBlockLeft() {
@@ -142,7 +142,7 @@ func (g *Game) Update(dt uint32) {
 
 	g.dt = 0
 
-	if g.HasCurrentBlock() {
+	if g.HasBlock() {
 		if g.CanMoveCurrentBlockDown() {
 			g.MoveCurrentBlockDown()
 		} else {
