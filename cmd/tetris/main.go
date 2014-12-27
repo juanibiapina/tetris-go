@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/juanibiapina/tetris/game"
-	"github.com/juanibiapina/tetris/render/console"
+	"github.com/juanibiapina/tetris/render/sdl"
 	"time"
 )
 
 func main() {
 	g := game.New()
 
-	renderer := console.New()
+	renderer := sdl.New()
 
 	renderer.Init()
 
