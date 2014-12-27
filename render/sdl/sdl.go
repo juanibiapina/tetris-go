@@ -2,7 +2,6 @@ package sdl
 
 import (
 	"github.com/juanibiapina/tetris/game"
-	"github.com/juanibiapina/tetris/render"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -11,11 +10,12 @@ const (
 )
 
 type Sdl struct {
-	Window  *sdl.Window
-	Surface *sdl.Surface
+	Window    *sdl.Window
+	Surface   *sdl.Surface
+	lastTicks uint32
 }
 
-func New() render.Renderer {
+func New() *Sdl {
 	return &Sdl{}
 }
 
@@ -27,10 +27,18 @@ func (s *Sdl) Init() {
 
 	s.Window = window
 	s.Surface = window.GetSurface()
+	s.lastTicks = sdl.GetTicks()
 }
 
 func (s *Sdl) Destroy() {
 	s.Window.Destroy()
+}
+
+func (s *Sdl) Ticks() uint32 {
+	current := sdl.GetTicks()
+	dt := current - s.lastTicks
+	s.lastTicks = current
+	return dt
 }
 
 func (s *Sdl) Render(g *game.Game) {

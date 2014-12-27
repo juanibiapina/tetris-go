@@ -2,23 +2,36 @@ package main
 
 import (
 	"github.com/juanibiapina/tetris/game"
-	"github.com/juanibiapina/tetris/render/sdl"
-	"time"
+	input "github.com/juanibiapina/tetris/input/sdl"
+	render "github.com/juanibiapina/tetris/render/sdl"
 )
 
 func main() {
 	g := game.New()
 
-	renderer := sdl.New()
+	sdl := render.New()
 
-	renderer.Init()
+	sdl.Init()
 
-	run := true
-	for run {
-		run = g.Update()
-		renderer.Render(g)
-		time.Sleep(1 * time.Second)
+	var acc uint32 = 0
+	for {
+		dt := sdl.Ticks()
+
+		input.Process(g)
+
+		g.Update(dt)
+
+		if g.Over() {
+			break
+		}
+
+		acc += dt
+
+		if acc > 16 {
+			acc = 0
+			sdl.Render(g)
+		}
 	}
 
-	renderer.Destroy()
+	sdl.Destroy()
 }
