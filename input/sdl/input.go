@@ -16,8 +16,15 @@ func Process(g *game.Game) {
 				g.TryMoveCurrentBlockLeft()
 			case sdl.K_RIGHT:
 				g.TryMoveCurrentBlockRight()
+			case sdl.K_DOWN:
+				g.SpeedUp()
 			case sdl.K_ESCAPE:
 				g.End()
+			}
+		case *sdl.KeyUpEvent:
+			switch k := t.Keysym.Sym; k {
+			case sdl.K_DOWN:
+				g.RestoreSpeed()
 			}
 		}
 	}

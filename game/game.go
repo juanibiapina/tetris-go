@@ -6,6 +6,7 @@ import (
 )
 
 type Game struct {
+	speedup bool
 	dt      uint32
 	speed   uint32
 	running bool
@@ -99,6 +100,14 @@ func (g *Game) MoveCurrentBlockRight() {
 	g.CurrentBlockX += 1
 }
 
+func (g *Game) SpeedUp() {
+	g.speedup = true
+}
+
+func (g *Game) RestoreSpeed() {
+	g.speedup = false
+}
+
 func (g *Game) MergeCurrentBlock() {
 	for r, row := range g.CurrentBlock.Data {
 		for c, v := range row {
@@ -133,10 +142,61 @@ func (g *Game) Over() bool {
 	return false
 }
 
+func (g *Game) getFilledLines() []int {
+	filled := make([]int, 0, 5)
+
+	for r, row := range g.Board.Tiles {
+		flag := true
+		for _, v := range row {
+			if v != 1 {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			filled = append(filled, r)
+		}
+	}
+
+	return filled
+}
+
+func (g *Game) removeLine(line int) {
+	for r := line; r > 0; r-- {
+		row := g.Board.Tiles[r]
+		for c, _ := range row {
+			g.Board.Tiles[r][c] = g.Board.Tiles[r-1][c]
+		}
+	}
+
+	for i := 0; i < 10; i++ {
+		g.Board.Tiles[0][i] = 0
+	}
+}
+
+func (g *Game) DestroyFilledLines() {
+	filled := g.getFilledLines()
+	n := len(filled)
+
+	if n == 0 {
+		return
+	}
+
+	for _, line := range filled {
+		g.removeLine(line)
+	}
+}
+
 func (g *Game) Update(dt uint32) {
 	g.dt += dt
 
-	if g.dt < g.speed {
+	threashold := g.speed
+
+	if g.speedup {
+		threashold = threashold / 10
+	}
+
+	if g.dt < threashold {
 		return
 	}
 
@@ -151,4 +211,6 @@ func (g *Game) Update(dt uint32) {
 	} else {
 		g.spawnBlock()
 	}
+
+	g.DestroyFilledLines()
 }
