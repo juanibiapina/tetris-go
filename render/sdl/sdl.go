@@ -54,22 +54,7 @@ func (s *Sdl) Render(g *game.Game) {
 	bborder := sdl.Rect{0, 17 * BLOCK_WIDTH, 12 * BLOCK_WIDTH, BLOCK_WIDTH}
 	s.Surface.FillRect(&bborder, 0x000000ff)
 
-	board := game.NewBoard(10, 16)
-	for l, _ := range board.Tiles {
-		copy(board.Tiles[l], g.Board.Tiles[l])
-	}
-
-	if g.HasBlock() {
-		for r, row := range g.CurrentBlock.Data {
-			for c, v := range row {
-				x := g.CurrentBlockX + c
-				y := g.CurrentBlockY + r
-				board.Tiles[y][x] += v
-			}
-		}
-	}
-
-	for r, line := range board.Tiles {
+	for r, line := range g.Board.Tiles {
 		for c, v := range line {
 			var color uint32
 			if v == 0 {
@@ -79,6 +64,18 @@ func (s *Sdl) Render(g *game.Game) {
 			}
 			rect := sdl.Rect{int32((c + 1) * BLOCK_WIDTH), int32((r + 1) * BLOCK_WIDTH), BLOCK_WIDTH, BLOCK_WIDTH}
 			s.Surface.FillRect(&rect, color)
+		}
+	}
+
+	if g.HasBlock() {
+		for _, p := range g.CurrentBlock.CurrentForm() {
+			x := g.CurrentBlockX + p.X
+			y := g.CurrentBlockY + p.Y
+			if y < 0 {
+				continue
+			}
+			rect := sdl.Rect{int32((x + 1) * BLOCK_WIDTH), int32((y + 1) * BLOCK_WIDTH), BLOCK_WIDTH, BLOCK_WIDTH}
+			s.Surface.FillRect(&rect, 0x0000ffff)
 		}
 	}
 

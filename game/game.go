@@ -38,23 +38,18 @@ func (g *Game) HasBlock() bool {
 }
 
 func (g *Game) CanMove(offsetx, offsety int) bool {
-	for r, row := range g.CurrentBlock.Data {
-		for c, v := range row {
-			if v == 0 {
-				continue
-			}
+	for _, p := range g.CurrentBlock.CurrentForm() {
+		x := g.CurrentBlockX + p.X + offsetx
+		y := g.CurrentBlockY + p.Y + offsety
 
-			x := g.CurrentBlockX + c + offsetx
-			y := g.CurrentBlockY + r + offsety
-			if x < 0 || x >= 10 {
-				return false
-			}
-			if y >= 16 {
-				return false
-			}
-			if g.Board.Tiles[y][x] >= 1 {
-				return false
-			}
+		if x < 0 || x >= 10 {
+			return false
+		}
+		if y < 0 || y >= 16 {
+			return false
+		}
+		if g.Board.Tiles[y][x] >= 1 {
+			return false
 		}
 	}
 	return true
@@ -104,17 +99,22 @@ func (g *Game) SpeedUp() {
 	g.speedup = true
 }
 
+func (g *Game) RotateCurrentBlock() {
+	if g.HasBlock() {
+		g.CurrentBlock.Rotate()
+	}
+}
+
 func (g *Game) RestoreSpeed() {
 	g.speedup = false
 }
 
 func (g *Game) MergeCurrentBlock() {
-	for r, row := range g.CurrentBlock.Data {
-		for c, v := range row {
-			x := g.CurrentBlockX + c
-			y := g.CurrentBlockY + r
-			g.Board.Tiles[y][x] += v
-		}
+	for _, p := range g.CurrentBlock.CurrentForm() {
+		x := g.CurrentBlockX + p.X
+		y := g.CurrentBlockY + p.Y
+
+		g.Board.Tiles[y][x] = 1
 	}
 	g.CurrentBlock = nil
 }
@@ -123,7 +123,7 @@ func (g *Game) spawnBlock() {
 	n := g.r.Intn(len(g.Blocks))
 	b := g.Blocks[n]
 	g.CurrentBlock = &b
-	g.CurrentBlockX = b.Start
+	g.CurrentBlockX = 4
 	g.CurrentBlockY = 0
 }
 

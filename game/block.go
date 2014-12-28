@@ -1,51 +1,83 @@
 package game
 
+type Point struct {
+	X int
+	Y int
+}
+
+type Form []Point
+
 type Block struct {
-	Data  [][]int
-	Start int
+	rotation int
+	forms    []Form
+}
+
+func (b *Block) CurrentForm() Form {
+	return b.forms[b.rotation]
+}
+
+func (b *Block) Rotate() {
+	b.rotation = (b.rotation + 1) % len(b.forms)
 }
 
 var AllBlocks []Block = []Block{
-	Square,
-	Line,
-	LLeft,
-	LRight,
-	CurlyL,
-	CurlyR,
+	O,
+	I,
 	T,
+	L1,
+	L2,
+	S1,
+	S2,
 }
 
-var Square = Block{
-	Data:  [][]int{[]int{1, 1}, []int{1, 1}},
-	Start: 4,
+var O = Block{
+	forms: []Form{Form{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
 }
 
-var Line = Block{
-	Data:  [][]int{[]int{1, 1, 1, 1}},
-	Start: 3,
-}
-
-var LLeft = Block{
-	Data:  [][]int{[]int{1, 0}, []int{1, 0}, []int{1, 1}},
-	Start: 4,
-}
-
-var LRight = Block{
-	Data:  [][]int{[]int{0, 1}, []int{0, 1}, []int{1, 1}},
-	Start: 4,
-}
-
-var CurlyL = Block{
-	Data:  [][]int{[]int{1, 0}, []int{1, 1}, []int{0, 1}},
-	Start: 4,
-}
-
-var CurlyR = Block{
-	Data:  [][]int{[]int{0, 1}, []int{1, 1}, []int{1, 0}},
-	Start: 4,
+var I = Block{
+	forms: []Form{
+		Form{{-1, 0}, {0, 0}, {1, 0}, {2, 0}},
+		Form{{0, -1}, {0, 0}, {0, 1}, {0, 2}},
+	},
 }
 
 var T = Block{
-	Data:  [][]int{[]int{0, 1, 0}, []int{1, 1, 1}},
-	Start: 4,
+	forms: []Form{
+		Form{{-1, 0}, {0, 0}, {1, 0}, {0, -1}},
+		Form{{0, 0}, {0, -1}, {0, 1}, {-1, 0}},
+		Form{{-1, 0}, {0, 0}, {1, 0}, {0, 1}},
+		Form{{0, 0}, {0, -1}, {0, 1}, {1, 0}},
+	},
+}
+
+var L1 = Block{
+	forms: []Form{
+		Form{{0, 0}, {0, -1}, {0, 1}, {1, 1}},
+		Form{{-1, 0}, {0, 0}, {1, 0}, {1, -1}},
+		Form{{0, 0}, {0, 1}, {0, -1}, {-1, -1}},
+		Form{{0, 0}, {-1, 0}, {1, 0}, {-1, 1}},
+	},
+}
+
+var L2 = Block{
+	forms: []Form{
+		Form{{0, 0}, {0, -1}, {0, 1}, {-1, 1}},
+		Form{{0, 0}, {-1, 0}, {1, 0}, {1, 1}},
+		Form{{0, 0}, {0, 1}, {0, -1}, {1, -1}},
+		Form{{0, 0}, {-1, 0}, {1, 0}, {-1, -1}},
+	},
+}
+
+var S1 = Block{
+	forms: []Form{
+		Form{{0, 0}, {1, 0}, {1, -1}, {0, 1}},
+		Form{{0, 0}, {1, 0}, {0, -1}, {-1, -1}},
+	},
+}
+
+var S2 = Block{
+	forms: []Form{
+		Form{{0, 0}, {1, 0}, {1, 1}, {0, -1}},
+		Form{{0, 0}, {-1, 0}, {0, -1}, {1, -1}},
+	},
 }

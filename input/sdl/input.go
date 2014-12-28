@@ -18,6 +18,8 @@ func Process(g *game.Game) {
 				g.TryMoveCurrentBlockRight()
 			case sdl.K_DOWN:
 				g.SpeedUp()
+			case sdl.K_UP:
+				g.RotateCurrentBlock()
 			case sdl.K_ESCAPE:
 				g.End()
 			}
