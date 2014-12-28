@@ -114,7 +114,10 @@ func (g *Game) MergeCurrentBlock() {
 		x := g.CurrentBlockX + p.X
 		y := g.CurrentBlockY + p.Y
 
-		g.Board.Tiles[y][x] = 1
+		if y < 0 {
+			continue
+		}
+		g.Board.Tiles[y][x] += 1
 	}
 	g.CurrentBlock = nil
 }
