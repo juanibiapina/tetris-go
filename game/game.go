@@ -99,9 +99,36 @@ func (g *Game) SpeedUp() {
 	g.speedup = true
 }
 
+func (g *Game) Valid() bool {
+	// check block boundaries
+	if g.HasBlock() {
+		for _, p := range g.CurrentBlock.CurrentForm() {
+			x := g.CurrentBlockX + p.X
+			y := g.CurrentBlockY + p.Y
+
+			if x < 0 || x >= 10 || y >= 16 {
+				return false
+			}
+		}
+	}
+
+	// check block overlap
+	for _, line := range g.Board.Tiles {
+		for _, v := range line {
+			if v > 1 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 func (g *Game) RotateCurrentBlock() {
 	if g.HasBlock() {
 		g.CurrentBlock.Rotate()
+		if !g.Valid() {
+			g.CurrentBlock.Unrotate()
+		}
 	}
 }
 

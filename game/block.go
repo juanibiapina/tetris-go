@@ -20,6 +20,13 @@ func (b *Block) Rotate() {
 	b.rotation = (b.rotation + 1) % len(b.forms)
 }
 
+func (b *Block) Unrotate() {
+	b.rotation = (b.rotation - 1) % len(b.forms)
+	if b.rotation < 0 {
+		b.rotation = -b.rotation
+	}
+}
+
 var AllBlocks []Block = []Block{
 	O,
 	I,
