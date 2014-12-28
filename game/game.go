@@ -29,7 +29,7 @@ func New() *Game {
 		Blocks:  AllBlocks,
 		r:       initRand(),
 		running: true,
-		speed:   300,
+		speed:   500,
 	}
 }
 
@@ -186,6 +186,7 @@ func (g *Game) DestroyFilledLines() {
 	}
 
 	for _, line := range filled {
+		g.speed -= 25
 		g.removeLine(line)
 	}
 }
